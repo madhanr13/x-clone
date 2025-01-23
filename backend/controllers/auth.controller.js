@@ -97,12 +97,13 @@ export const logoutHandler = async (req, res) => {
   }
 };
 
-// export const getMeHandler = async(req, res) => {
-//   try {
-//     const user = await User.findOne({id: req.user._id})
-//   } catch (error) {
-//     console.log("Error in getMe Controller: ", error.message);
-//     res.status(500).json({ error: "Internal server error", error });
+export const getMeHandler = async(req, res) => {
+  try {
+    const user = await User.findOne({_id: req.user._id}).select("-password")
+    res.status(200).json(user)
+  } catch (error) {
+    console.log("Error in getMe Controller: ", error.message);
+    res.status(500).json({ error: "Internal server error", error });
     
-//   }
-// }
+  }
+}
