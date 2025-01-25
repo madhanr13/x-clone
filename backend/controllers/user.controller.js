@@ -29,7 +29,7 @@ export const followUnFollowUser = async (req, res) => {
         .json({ error: "You can't follow/unfollow yourself" });
     }
     if (!userToModify || !currentUser) {
-      return res.status(400).json({ error: "User not found" });
+      return res.status(404).json({ error: "User not found" });
     }
     const isFollowing = currentUser.following.includes(id);
 
@@ -115,7 +115,7 @@ export const updateUser = async (req, res) => {
     let { profileImg, coverImg } = req.body;
 
     let user = await User.findById(userId);
-    if (!user) return res.status(400).json({ error: "User not found" });
+    if (!user) return res.status(404).json({ error: "User not found" });
 
     if (
       (!currentpassword && newpassword) ||
