@@ -1,11 +1,7 @@
 import React from "react";
 
 const App = () => {
-  return (
-    <div className="text-2xl">
-      <button className="btn btn-outline btn-success">Success</button>
-    </div>
-  );
+  return <div className="bg-blue-500">App</div>;
 };
 
 export default App;
