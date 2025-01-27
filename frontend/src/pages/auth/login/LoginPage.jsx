@@ -5,6 +5,10 @@ import XSvg from "../../../components/svgs/X";
 
 import { FaUser } from "react-icons/fa";
 import { RiLockPasswordFill } from "react-icons/ri";
+import { useMutation } from "@tanstack/react-query";
+import { baseUrl } from "../../../constant/url";
+import toast from "react-hot-toast";
+import LoadingSpinner from "../../../components/common/LoadingSpinner";
 
 const LoginPage = () => {
   const [formData, setFormData] = useState({
@@ -12,16 +16,43 @@ const LoginPage = () => {
     password: "",
   });
 
+  const {
+    mutate: login,
+    isPending,
+    isError,
+    error,
+  } = useMutation({
+    mutationFn: async ({ username, password }) => {
+      try {
+        const res = await fetch(`${baseUrl}/api/auth/login`, {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ username, password }),
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          throw new Error(data.error || "Failed to login");
+        }
+      } catch (error) {
+        throw error;
+      }
+    },
+    onSuccess: () => {
+      toast.success("Logged in successfully");
+    },
+  });
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(formData);
+    login(formData);
   };
 
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
-
-  const isError = false;
 
   return (
     <div className="max-w-screen-xl mx-auto flex h-screen">
@@ -56,9 +87,9 @@ const LoginPage = () => {
             />
           </label>
           <button className="btn rounded-full btn-primary text-white">
-            Login
+            {isPending ? <LoadingSpinner /> : "Login"}
           </button>
-          {isError && <p className="text-red-500">Something went wrong</p>}
+          {isError && <p className="text-red-500">{error.message}</p>}
         </form>
         <div className="flex flex-col gap-2 mt-4">
           <p className="text-white text-center text-lg">

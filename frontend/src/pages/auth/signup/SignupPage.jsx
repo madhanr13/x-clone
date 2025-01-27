@@ -7,25 +7,60 @@ import { MdOutlineMail } from "react-icons/md";
 import { FaUser } from "react-icons/fa";
 import { RiLockPasswordFill } from "react-icons/ri";
 import { MdDriveFileRenameOutline } from "react-icons/md";
+import { useMutation } from "@tanstack/react-query";
+import { baseUrl } from "../../../constant/url";
+import toast from "react-hot-toast";
+import LoadingSpinner from "../../../components/common/LoadingSpinner";
 
 const SignUpPage = () => {
   const [formData, setFormData] = useState({
     email: "",
     username: "",
-    fullName: "",
+    fullname: "",
     password: "",
+  });
+
+  const {
+    mutate: signup,
+    isError,
+    isPending,
+    error,
+  } = useMutation({
+    mutationFn: async ({ email, username, fullname, password }) => {
+      try {
+        const res = await fetch(`${baseUrl}/api/auth/signup`, {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          body: JSON.stringify({ email, username, fullname, password }),
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          throw new Error(data.error || "Failed to create account");
+        }
+        console.log(data);
+        return data;
+      } catch (error) {
+        console.log(error);
+        throw error;
+      }
+    },
+    onSuccess: () => {
+      toast.success("User created successfully");
+    },
   });
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(formData);
+    signup(formData);
   };
 
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
-
-  const isError = false;
 
   return (
     <div className="max-w-screen-xl mx-auto flex h-screen px-10">
@@ -68,9 +103,9 @@ const SignUpPage = () => {
                 type="text"
                 className="grow"
                 placeholder="Full Name"
-                name="fullName"
+                name="fullname"
                 onChange={handleInputChange}
-                value={formData.fullName}
+                value={formData.fullname}
               />
             </label>
           </div>
@@ -86,9 +121,9 @@ const SignUpPage = () => {
             />
           </label>
           <button className="btn rounded-full btn-primary text-white">
-            Sign up
+            {isPending ? <LoadingSpinner /> : "Sign up"}
           </button>
-          {isError && <p className="text-red-500">Something went wrong</p>}
+          {isError && <p className="text-red-500">{error.message}</p>}
         </form>
         <div className="flex flex-col lg:w-2/3 gap-2 mt-4">
           <p className="text-white text-center text-lg">

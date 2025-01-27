@@ -62,13 +62,16 @@ export const signupHandler = async (req, res) => {
 
 export const loginHandler = async (req, res) => {
   try {
-    const {username, password} = req.body
-    const user = await User.findOne({username})
-    const isPasswordCorrect = await bcrypt.compare(password, user?.password || "")
-    if(!user || !isPasswordCorrect) {
-      return res.status(400).json({error: "Invalid username or password"})
+    const { username, password } = req.body;
+    const user = await User.findOne({ username });
+    const isPasswordCorrect = await bcrypt.compare(
+      password,
+      user?.password || ""
+    );
+    if (!user || !isPasswordCorrect) {
+      return res.status(400).json({ error: "Invalid username or password" });
     }
-    generateTokenAndSetCookie(user._id, res)
+    generateTokenAndSetCookie(user._id, res);
     res.status(201).json({
       _id: user._id,
       fullname: user.fullname,
@@ -84,26 +87,27 @@ export const loginHandler = async (req, res) => {
   } catch (error) {
     console.log("Error in login Controller: ", error.message);
     res.status(500).json({ error: "Internal server error", error });
-    
   }
 };
 
 export const logoutHandler = async (req, res) => {
   try {
-    res.clearCookie("jwt").status(200).json({ message: "Logged out successfully" });
+    res
+      .clearCookie("jwt")
+      .status(200)
+      .json({ message: "Logged out successfully" });
   } catch (error) {
     console.log("Error in logout Controller: ", error.message);
     res.status(500).json({ error: "Internal server error", error });
   }
 };
 
-export const getMeHandler = async(req, res) => {
+export const getMeHandler = async (req, res) => {
   try {
-    const user = await User.findOne({_id: req.user._id}).select("-password")
-    res.status(200).json(user)
+    const user = await User.findOne({ _id: req.user._id }).select("-password");
+    res.status(200).json(user);
   } catch (error) {
     console.log("Error in getMe Controller: ", error.message);
     res.status(500).json({ error: "Internal server error", error });
-    
   }
-}
+};
