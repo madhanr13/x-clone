@@ -44,7 +44,7 @@ export const createPostHandler = async (req, res) => {
     }
 
     if (img) {
-      const uploadedResponse = cloudinary.uploader.upload(img);
+      const uploadedResponse = await cloudinary.uploader.upload(img);
       img = uploadedResponse.secure_url;
     }
 

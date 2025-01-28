@@ -5,7 +5,7 @@ import XSvg from "../../../components/svgs/X";
 
 import { FaUser } from "react-icons/fa";
 import { RiLockPasswordFill } from "react-icons/ri";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { baseUrl } from "../../../constant/url";
 import toast from "react-hot-toast";
 import LoadingSpinner from "../../../components/common/LoadingSpinner";
@@ -15,6 +15,8 @@ const LoginPage = () => {
     username: "",
     password: "",
   });
+
+  const queryClient = useQueryClient()
 
   const {
     mutate: login,
@@ -33,6 +35,9 @@ const LoginPage = () => {
           body: JSON.stringify({ username, password }),
         });
         const data = await res.json();
+        if(data.error){
+         return null
+        }
         if (!res.ok) {
           throw new Error(data.error || "Failed to login");
         }
@@ -41,7 +46,10 @@ const LoginPage = () => {
       }
     },
     onSuccess: () => {
-      toast.success("Logged in successfully");
+      toast.success("Logged in successfully")
+      queryClient.invalidateQueries({
+        queryKey: ["authUser"]
+      })
     },
   });
 
