@@ -17,7 +17,7 @@ function formatTimestamp(timestamp) {
   } else if (daysAgo < 7) {
     return `${daysAgo}d`;
   } else {
-    return `${daysAgo}days ago`;
+    return `Joined ${now.getFullYear()}`;
   }
 }
 
