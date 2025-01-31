@@ -1,2 +1,4 @@
-// export const baseUrl = "http://localhost:8000";
-export const baseUrl = "https://x-clone-x.netlify.app";
+export const baseUrl =
+  process.env.NODE_ENV === "production"
+    ? "" // Empty string for same-origin requests in production
+    : "http://localhost:8000";
