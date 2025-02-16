@@ -5,13 +5,14 @@ import useFollow from "../../hooks/useFollow.jsx";
 
 import RightPanelSkeleton from "../skeletons/RightPanelSkeleton.jsx";
 import LoadingSpinner from "./LoadingSpinner.jsx";
+import { baseUrl } from "../../constant/url.js";
 
 const RightPanel = () => {
 	const { data: suggestedUsers, isLoading } = useQuery({
 		queryKey: ["suggestedUsers"],
 		queryFn: async () => {
 			try {
-				const res = await fetch("/api/users/suggested");
+				const res = await fetch(`${baseUrl}/api/users/suggested`);
 				const data = await res.json();
 				if (!res.ok) {
 					throw new Error(data.error || "Something went wrong!");

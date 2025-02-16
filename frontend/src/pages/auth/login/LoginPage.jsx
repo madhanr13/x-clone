@@ -8,6 +8,7 @@ import { RiLockPasswordFill } from "react-icons/ri";
 
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { baseUrl } from "../../../constant/url";
 
 const LoginPage = () => {
 	const [formData, setFormData] = useState({
@@ -24,7 +25,7 @@ const LoginPage = () => {
 	} = useMutation({
 		mutationFn: async ({ username, password }) => {
 			try {
-				const res = await fetch("/api/auth/login", {
+				const res = await fetch(`${baseUrl}/api/auth/login`, {
 					method: "POST",
 					headers: {
 						"Content-Type": "application/json",
